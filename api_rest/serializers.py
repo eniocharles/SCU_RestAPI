@@ -12,12 +12,16 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 #Serializer para registro de usuário com hashing de senha e validação de email
-class RegisterUserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
+class UserRegistrationSerializer(serializers.ModelSerializer):
+    nickname = serializers.CharField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all(), message='Este nickname já está em uso.')]  
+    )
     email = serializers.EmailField(
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all(),message='Este e-mail já está em uso.')]
     )
+    password = serializers.CharField(write_only=True, min_length=6)
 
     class Meta:
         model = User
